@@ -1,0 +1,22 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+body h1,
+body h2,
+body h3,
+body h4,
+body h5 {
+  margin: 0;
+  font-family: sans-serif;
+  color: #3a3939;
+  font-weight: 400;
+}
+
