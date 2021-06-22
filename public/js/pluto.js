@@ -1908,7 +1908,18 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Admin_Header_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Admin/Header.vue */ "./resources/js/components/Admin/Header.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Admin_Header_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Admin/Header.vue */ "./resources/js/components/Admin/Header.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2014,111 +2025,151 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    adminHeader: _Admin_Header_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+    adminHeader: _Admin_Header_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
       site: {
         title: null,
-        tagline: 'The best site builder',
-        loginURL: 'letmein'
+        tagline: null,
+        faviconLink: null,
+        loginURL: null,
+        homepageURL: null,
+        errorpageURL: null
       },
-      pages: [{
-        id: 1,
-        title: 'Cart',
-        url: '/cart',
-        headerCode: "Cart Header Code",
-        body: 'car Body code',
-        footerCode: " cart   Footer code"
-      }, {
-        id: 2,
-        title: 'Blog',
-        url: '/blog',
-        headerCode: "Blog Header Code",
-        body: 'Blog Body code',
-        footerCode: "Blog Footer code"
-      }, {
-        id: 3,
-        title: 'Portfolio',
-        url: '/portfolio',
-        headerCode: "Portfolio Header Code",
-        body: 'Portfolio Body code',
-        footerCode: "Portfolio Footer code"
-      }],
+      pages: null,
       currentPage: {
-        id: '',
-        title: '',
-        type: '',
-        headerCode: '',
-        body: '',
-        footerCode: ''
+        id: null,
+        title: null,
+        url: null,
+        type: null,
+        headerCode: null,
+        body: null,
+        footerCode: null
+      },
+      currentSettings: {
+        title: null,
+        tagline: null,
+        faviconLink: null,
+        loginURL: null,
+        homepageURL: null,
+        errorpageURL: null
       },
       media: [{
         id: 1,
         title: 'PNS',
-        url: "background-image: url(".concat("/media/pns.jpg", ")"),
         link: '/media/pns.jpg',
         type: 'image'
       }, {
         id: 2,
         title: 'Cats',
-        url: "background-image: url(".concat("/media/1.png", ")"),
         link: '/media/1.png',
         type: 'image'
       }, {
         id: 3,
         title: 'Home Listing',
-        url: "background-image: url(".concat("/media/2.jpg", ")"),
         link: '/media/2.jpg',
         type: 'image'
       }, {
         id: 4,
         title: 'Dummis',
-        url: "background-image: url(".concat("/media/3.jpg", ")"),
         link: '/media/3.jpg',
         type: 'image'
       }, {
         id: 5,
         title: 'Dummis',
-        url: '/media/video1.mp4',
         link: '/media/video1.mp4',
         type: 'video'
       }, {
         id: 6,
         title: 'Dummis',
-        url: '/media/video1.mp4',
         link: '/media/video2.mp4',
         type: 'video'
       }, {
         id: 7,
         title: 'Dummis',
-        url: '/media/video1.mp4',
         link: '/media/video3.mp4',
         type: 'video'
       }, {
         id: 8,
         title: 'Dummis',
-        url: '/media/video1.mp4',
         link: '/media/video1.mp4',
         type: 'video'
       }]
     };
   },
+  computed: {},
   methods: {
-    saveAll: function saveAll() {
-      console.log(this.currentPage);
-    },
     editPage: function editPage() {
-      console.log(this.currentPage);
+      // console.log(this.currentPage)
+      this.currentPage.id = this.pages[this.currentPage.id - 1].id;
       this.currentPage.title = this.pages[this.currentPage.id - 1].title;
+      this.currentPage.type = this.pages[this.currentPage.id - 1].type;
+      this.currentPage.url = this.pages[this.currentPage.id - 1].url;
       this.currentPage.headerCode = this.pages[this.currentPage.id - 1].headerCode;
       this.currentPage.body = this.pages[this.currentPage.id - 1].body;
       this.currentPage.footerCode = this.pages[this.currentPage.id - 1].footerCode;
+    },
+    fetchPage: function fetchPage() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/v1/pages').then(function (res) {
+        _this.pages = res.data.pages;
+        console.log(res);
+      });
+    },
+    fetchSettings: function fetchSettings() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/v1/settings').then(function (res) {
+        _this2.currentSettings.title = res.data.title;
+        _this2.currentSettings.tagline = res.data.tagline;
+        _this2.currentSettings.faviconLink = res.data.faviconLink;
+        _this2.currentSettings.loginURL = res.data.loginURL;
+        _this2.currentSettings.homepageURL = res.data.homepageURL;
+        _this2.currentSettings.errorpageURL = res.data.errorpageURL;
+        console.log(res);
+      }).then(function () {
+        _this2.fetchPage();
+      });
+      console.log('Before mount');
+    },
+    saveSettings: function saveSettings() {
+      console.log('save settings');
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('api/v1/settings', {
+        title: this.currentSettings.title,
+        tagline: this.currentSettings.tagline,
+        faviconLink: this.currentSettings.faviconLink,
+        loginURL: this.currentSettings.loginURL,
+        homepageURL: this.currentSettings.homepageURL,
+        errorpageURL: this.currentSettings.errorpageURL
+      }).then(function (res) {
+        console.log(res.data);
+      });
+    },
+    savePage: function savePage() {
+      console.log('save Page');
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('api/v1/pages', {
+        id: this.currentPage.id,
+        title: this.currentPage.title,
+        type: this.currentPage.type,
+        url: this.currentPage.url,
+        headerCode: this.currentPage.headerCode,
+        body: this.currentPage.body,
+        footerCode: this.currentPage.footerCode
+      }).then(function (res) {
+        console.log(res.data);
+      })["catch"](function (err) {
+        console.log(err);
+      });
     }
   },
-  computed: {}
+  beforeMount: function beforeMount() {
+    this.fetchSettings();
+  }
 });
 
 /***/ }),
@@ -2155,12 +2206,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     logout: function logout() {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(this.$store.state.url.logout).then(function (res) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('letmein/logout').then(function (res) {
         console.log(res);
         alert("You've logged out !");
         setTimeout(function () {
           window.location = '/';
-        }, 1500);
+        }, 300);
       });
     }
   }
@@ -3356,46 +3407,153 @@ var render = function() {
         _vm._v(" "),
         _c("div", { attrs: { id: "menu-1" } }, [
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.currentSettings.title,
+                expression: "currentSettings.title"
+              }
+            ],
             attrs: {
               type: "text",
               name: "title",
               id: "",
               placeholder: "Site title"
             },
-            domProps: { value: _vm.site.title ? _vm.site.title : "" }
+            domProps: { value: _vm.currentSettings.title },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.currentSettings, "title", $event.target.value)
+              }
+            }
           }),
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.currentSettings.tagline,
+                expression: "currentSettings.tagline"
+              }
+            ],
             attrs: {
               type: "text",
               name: "tagline",
               id: "",
-              placeholder: "Site title"
+              placeholder: "Site tagline"
             },
-            domProps: { value: _vm.site.tagline ? _vm.site.tagline : "" }
+            domProps: { value: _vm.currentSettings.tagline },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.currentSettings, "tagline", $event.target.value)
+              }
+            }
           }),
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.currentSettings.loginURL,
+                expression: "currentSettings.loginURL"
+              }
+            ],
             attrs: {
               type: "text",
               name: "loginURL",
               id: "",
-              placeholder: "Site title"
+              placeholder: "Login URL"
             },
-            domProps: { value: _vm.site.loginURL ? _vm.site.loginURL : "" }
+            domProps: { value: _vm.currentSettings.loginURL },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.currentSettings, "loginURL", $event.target.value)
+              }
+            }
           }),
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
-          _c("label", { attrs: { for: "cars" } }, [_vm._v("Homepage:")]),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.currentSettings.faviconLink,
+                expression: "currentSettings.faviconLink"
+              }
+            ],
+            attrs: {
+              type: "text",
+              name: "faviconLink",
+              id: "",
+              placeholder: "Login URL"
+            },
+            domProps: { value: _vm.currentSettings.faviconLink },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(
+                  _vm.currentSettings,
+                  "faviconLink",
+                  $event.target.value
+                )
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "homepageURL" } }, [_vm._v("Homepage:")]),
           _vm._v(" "),
           _c(
             "select",
-            { attrs: { name: "cars", id: "cars" } },
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentSettings.homepageURL,
+                  expression: "currentSettings.homepageURL"
+                }
+              ],
+              attrs: { name: "homepageURL", id: "" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.currentSettings,
+                    "homepageURL",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
             _vm._l(_vm.pages, function(page) {
               return _c(
                 "option",
@@ -3410,11 +3568,40 @@ var render = function() {
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
-          _c("label", { attrs: { for: "cars" } }, [_vm._v("Error page:")]),
+          _c("label", { attrs: { for: "errorpageURL" } }, [
+            _vm._v("Error page:")
+          ]),
           _vm._v(" "),
           _c(
             "select",
-            { attrs: { name: "cars", id: "cars" } },
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentSettings.errorpageURL,
+                  expression: "currentSettings.errorpageURL"
+                }
+              ],
+              attrs: { name: "errorpageURL", id: "" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.currentSettings,
+                    "errorpageURL",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
             _vm._l(_vm.pages, function(page) {
               return _c(
                 "option",
@@ -3423,7 +3610,13 @@ var render = function() {
               )
             }),
             0
-          )
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "button" }, [
+            _c("button", { on: { click: _vm.saveSettings } }, [
+              _vm._v("Save Settings ⚡")
+            ])
+          ])
         ]),
         _vm._v(" "),
         _c("div", { attrs: { id: "menu-2" } }, [
@@ -3443,7 +3636,7 @@ var render = function() {
                     expression: "currentPage.id"
                   }
                 ],
-                attrs: { name: "page" },
+                attrs: { name: "id" },
                 on: {
                   change: [
                     function($event) {
@@ -3482,59 +3675,163 @@ var render = function() {
             _c("br"),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentPage.title,
+                  expression: "currentPage.title"
+                }
+              ],
               attrs: {
                 type: "text",
                 name: "title",
                 id: "",
                 placeholder: "Page title"
               },
-              domProps: { value: _vm.currentPage.title }
+              domProps: { value: _vm.currentPage.title },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.currentPage, "title", $event.target.value)
+                }
+              }
             }),
             _vm._v(" "),
             _c("br"),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentPage.url,
+                  expression: "currentPage.url"
+                }
+              ],
+              attrs: {
+                type: "text",
+                name: "url",
+                id: "",
+                placeholder: "Page URL"
+              },
+              domProps: { value: _vm.currentPage.url },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.currentPage, "url", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentPage.type,
+                  expression: "currentPage.type"
+                }
+              ],
               attrs: {
                 type: "text",
                 name: "type",
                 id: "",
                 placeholder: "Page type"
               },
-              domProps: { value: _vm.currentPage.type }
+              domProps: { value: _vm.currentPage.type },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.currentPage, "type", $event.target.value)
+                }
+              }
             }),
             _vm._v(" "),
             _c("br"),
             _vm._v(" "),
             _c("textarea", {
-              attrs: {
-                type: "text",
-                name: "header",
-                id: "",
-                placeholder: "Header code"
-              },
-              domProps: { value: _vm.currentPage.headerCode }
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentPage.headerCode,
+                  expression: "currentPage.headerCode"
+                }
+              ],
+              attrs: { name: "headerCode", id: "", placeholder: "Header code" },
+              domProps: { value: _vm.currentPage.headerCode },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.currentPage, "headerCode", $event.target.value)
+                }
+              }
             }),
             _vm._v(" "),
             _c("br"),
             _vm._v(" "),
             _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentPage.body,
+                  expression: "currentPage.body"
+                }
+              ],
               attrs: { name: "body", placeholder: "Body code " },
-              domProps: { value: _vm.currentPage.body }
+              domProps: { value: _vm.currentPage.body },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.currentPage, "body", $event.target.value)
+                }
+              }
             }),
             _vm._v(" "),
             _c("br"),
             _vm._v(" "),
             _c("textarea", {
-              attrs: {
-                type: "footer",
-                name: "title",
-                id: "",
-                placeholder: "Footer code"
-              },
-              domProps: { value: _vm.currentPage.footerCode }
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.currentPage.footerCode,
+                  expression: "currentPage.footerCode"
+                }
+              ],
+              attrs: { name: "footerCode", id: "", placeholder: "Footer code" },
+              domProps: { value: _vm.currentPage.footerCode },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.currentPage, "footerCode", $event.target.value)
+                }
+              }
             }),
             _vm._v(" "),
-            _c("br")
+            _c("br"),
+            _vm._v(" "),
+            _c("div", { staticClass: "button" }, [
+              _c("button", { on: { click: _vm.savePage } }, [
+                _vm._v("Update page ⚡")
+              ])
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -3556,7 +3853,10 @@ var render = function() {
                   [
                     file.type == "image"
                       ? _c("div", { staticClass: "file" }, [
-                          _c("div", { staticClass: "thumb", style: file.url }),
+                          _c("div", {
+                            staticClass: "thumb",
+                            style: { backgroundImage: "url(" + file.link + ")" }
+                          }),
                           _vm._v(" "),
                           _c("p", [_vm._v(_vm._s(file.title) + " ")]),
                           _vm._v(" "),
@@ -3626,9 +3926,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _vm._m(1)
-      ]),
-      _vm._v(" "),
-      _vm._m(2)
+      ])
     ],
     1
   )
@@ -3673,14 +3971,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "button" }, [_c("button", [_vm._v("Upload")])]),
       _vm._v(" "),
       _c("p", [_vm._v("0%")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "button" }, [
-      _c("button", {}, [_vm._v("Save ⚡")])
     ])
   }
 ]
@@ -17402,11 +17692,37 @@ $(function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
-    count: 0,
-    url: {
-      login: '/letmein/login',
-      logout: '/letmein/logout'
-    }
+    site: {
+      title: null,
+      tagline: 'From store The best site builder',
+      faviconLink: '/media/pns.jpg',
+      loginURL: 'letmein'
+    },
+    pages: [{
+      id: 1,
+      title: 'Cart',
+      url: '/cart',
+      type: 'Menu',
+      headerCode: "Cart Header Code",
+      body: 'car Body code',
+      footerCode: " cart   Footer code"
+    }, {
+      id: 2,
+      title: 'Blog',
+      url: '/blog',
+      type: 'Menu',
+      headerCode: "Blog Header Code",
+      body: 'Blog Body code',
+      footerCode: "Blog Footer code"
+    }, {
+      id: 3,
+      title: 'Portfolio',
+      url: '/portfolio',
+      type: 'Menu',
+      headerCode: "Portfolio Header Code",
+      body: 'Portfolio Body code',
+      footerCode: "Portfolio Footer code"
+    }]
   },
   mutations: {}
 });

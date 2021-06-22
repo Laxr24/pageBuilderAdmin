@@ -22,13 +22,12 @@ export default {
     },
     methods: {
         logout: function(){
-
-            axios.post( this.$store.state.url.logout , ).then( res=>{
+            axios.post( 'letmein/logout', ).then( res=>{
                 console.log(res)
                 alert("You've logged out !")
                 setTimeout(()=>{
                     window.location = '/'
-                }, 1500)
+                }, 300)
             })
         }
     }

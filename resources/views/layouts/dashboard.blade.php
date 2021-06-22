@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{{ asset('js/jquery-ui-1.12.1/jquery-ui.min.css')}}">
     <link rel="stylesheet" href="{{ asset('css/icofont.min.css') }}">
     <link rel="stylesheet" href="{{ asset('js/lightbox/dist/css/lightbox.min.css') }}">
-
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="{{ asset('js/jquery-ui-1.12.1/jquery-ui.min.js')}}"></script>
     <script src="{{ asset('js/lightbox/dist/js/lightbox.min.js')}}"></script>
