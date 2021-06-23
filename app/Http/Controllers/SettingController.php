@@ -57,4 +57,28 @@ class SettingController extends Controller
             'errorpageURL'=>$request->errorpageURL,
         ], 200); 
     }
+
+   public function dum(Request $request){
+    //  return   response()->json(['msg'=> $request]); 
+        $settings = Setting::findOrFail(1);  
+        $settings->title = $request->title; 
+        $settings->tagline = $request->tagline; 
+        $settings->faviconLink = $request->faviconLink; 
+        $settings->loginURL = $request->loginURL; 
+        $settings->homepageURL = $request->homepageURL; 
+        $settings->errorpageURL = $request->errorpageURL; 
+        // $settings->save(); 
+        // $settings->title = $request->title; 
+        $settings->save(); 
+        // return   response()->json(['msg'=> $settings->title]); 
+
+        return response()->json([
+            'title'=> $request->title,
+            'tagline'=> $request->tagline, 
+            'faviconLink'=>$request->faviconLink,
+            'loginURL'=>$request->loginURL,
+            'homepageURL'=>$request->homepageURL,
+            'errorpageURL'=>$request->errorpageURL,
+        ], 200); 
+   }
 }

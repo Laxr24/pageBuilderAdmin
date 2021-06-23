@@ -21,13 +21,13 @@
                 <br>
                 <label for="homepageURL">Homepage:</label>
                 <select v-model="currentSettings.homepageURL" name="homepageURL" id="">
-                    <option v-for="page in pages" :key="page.id" :value="page.url">{{page.title}}</option>
+                    <option selected v-for="page in pages" :key="page.id" :value="page.url">{{page.title}}</option>
                 </select>
                 <br>
                 <br>
                 <label for="errorpageURL">Error page:</label>
                 <select v-model="currentSettings.errorpageURL" name="errorpageURL" id="">
-                    <option v-for="page in pages" :key="page.id" :value="page.url">{{page.title}}</option>
+                    <option selected v-for="page in pages" :key="page.id" :value="page.url">{{page.title}}</option>
                 </select>
 
                 <div class="button">
@@ -38,7 +38,8 @@
                 <div class="container">
                     <br>
                     <label for="page">Select Page:</label>
-                    <select name="id" v-model="currentPage.id" @change="editPage">
+                    <select name="page" v-model="currentPage.id" @change="editPage">
+                        <option  value="0" selected>Add new page</option>
                         <option v-for="page in pages" :key="page.id" :value="page.id">{{page.title}}</option>
                     </select>
                     <br>
@@ -58,7 +59,8 @@
                 <br>
 
                 <div class="button">
-                    <button @click="savePage" class="">Update page ⚡</button>
+                    <button v-if="updatePage" @click="savePage" class="">Update page ⚡</button>
+                    <button v-if="addPage" @click="nePage">Add this page ⚡</button>
                 </div>
                 </div>
             </div>
@@ -129,6 +131,8 @@
                     errorpageURL: null
                 }, 
                 pages: null, 
+                addPage: true,
+                updatePage: false, 
                 currentPage: {
                     id: null, 
                     title: null, 
@@ -143,8 +147,10 @@
                     tagline: null,
                     faviconLink: null, 
                     loginURL: null,
-                    homepageURL: null, 
-                    errorpageURL: null
+                    homepageURL: null,
+                    homepageTitle: null, 
+                    errorpageURL: null, 
+                    errorpageTitle: null 
                 },
                 media: [
                     {
@@ -204,8 +210,29 @@
             
         },
         methods: {
+            nePage: function(){
+                axios.post('api/v1/pages',{ 
+                    title : this.currentPage.title, 
+                    type : this.currentPage.type, 
+                    url: this.currentPage.url, 
+                    headerCode: this.currentPage.headerCode,
+                    body: this.currentPage.body, 
+                    footerCode: this.currentPage.footerCode
+                }).then(res=>{
+                    console.log(res.data)
+                    alert('Successfully Added!')
+
+                }).catch(err=>{
+                    console.log(err)
+                    alert('Somethings wrong!')
+
+                })
+            }, 
             editPage:   function () {
                 // console.log(this.currentPage)
+                if(this.currentPage.id != 0){
+                this.addPage = false 
+                this.updatePage = true 
                 this.currentPage.id = this.pages[this.currentPage.id-1].id 
                 this.currentPage.title = this.pages[this.currentPage.id-1].title 
                 this.currentPage.type = this.pages[this.currentPage.id-1].type 
@@ -213,6 +240,19 @@
                 this.currentPage.headerCode = this.pages[this.currentPage.id-1].headerCode
                 this.currentPage.body = this.pages[this.currentPage.id-1].body
                 this.currentPage.footerCode = this.pages[this.currentPage.id-1].footerCode
+                }
+                else{
+                    this.addPage = true
+                    this.updatePage = false 
+                this.currentPage.id = null 
+                this.currentPage.title = null
+                this.currentPage.type = null
+                this.currentPage.url = null
+                this.currentPage.headerCode = null
+                this.currentPage.body = null
+                this.currentPage.footerCode = null
+                    console.log('Addpage is selected')
+                }
             }, 
             fetchPage: function(){
                 axios.get('api/v1/pages').then(res=>{
@@ -227,7 +267,9 @@
                  this.currentSettings.faviconLink = res.data.faviconLink   
                  this.currentSettings.loginURL = res.data.loginURL   
                  this.currentSettings.homepageURL = res.data.homepageURL   
+                 this.currentSettings.homepageTitle = res.data.homepageTitle   
                  this.currentSettings.errorpageURL = res.data.errorpageURL   
+                 this.currentSettings.errorpageTitle = res.data.errorpageTitle   
 
                  console.log(res)
                 }).then(()=>{
@@ -238,7 +280,7 @@
             }, 
             saveSettings: function (){
                 console.log('save settings')
-                axios.put('api/v1/settings',{
+                axios.put('/api/v1/settings',{
                     title : this.currentSettings.title, 
                     tagline : this.currentSettings.tagline, 
                     faviconLink: this.currentSettings.faviconLink, 
@@ -246,11 +288,13 @@
                     homepageURL: this.currentSettings.homepageURL, 
                     errorpageURL: this.currentSettings.errorpageURL
                 }).then(res=>{
-                    console.log(res.data)
+                    console.log(res)
+                    alert('Successfully saved!')
+                }).catch(err=>{
+                    console.log(err)
                 })
             }, 
             savePage: function (){
-                console.log('save Page')
                 axios.put('api/v1/pages',{
                     id : this.currentPage.id, 
                     title : this.currentPage.title, 
@@ -261,8 +305,12 @@
                     footerCode: this.currentPage.footerCode
                 }).then(res=>{
                     console.log(res.data)
+                    alert('Successfully saved!')
+
                 }).catch(err=>{
                     console.log(err)
+                    alert('Somethings wrong!')
+
                 })
             }
         },

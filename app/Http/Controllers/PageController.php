@@ -17,6 +17,25 @@ class PageController extends Controller
 
 
 
+
+
+    public function store(Request $request){
+
+        $page = new Page; 
+        $page->title = $request->title; 
+        $page->url = $request->url; 
+        $page->type = $request->type; 
+        $page->headerCode = $request->headerCode; 
+        $page->body = $request->body; 
+        $page->footerCode = $request->footerCode; 
+        $page->save(); 
+
+        return response()->json([
+            'data'=> $page
+        ]); 
+
+        // return response()->json(['res'=>'PNS']); 
+    }
     public function update(Request $request){
 
         $page = Page::find($request->id); 
@@ -31,5 +50,7 @@ class PageController extends Controller
         return response()->json([
             'data'=> $page
         ]); 
+
+        // return response()->json(['res'=>'PNS']); 
     }
 }

@@ -14,12 +14,9 @@ Route::prefix('letmein')->group(function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
-
-// Take over Error page 
+// Main deafault  Error page 
 Route::fallback(function(){
     $errorURL = Setting::all('errorpageURL'); 
-    
     if(count($errorURL)>0){
         return response()->json(['errorpageURL'=>$errorURL[0]->errorpageURL]);
     }

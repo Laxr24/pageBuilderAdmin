@@ -20,7 +20,9 @@ class CreateSettingsTable extends Migration
             $table->string('loginURL', 50)->nullable()->default('letmein');
             $table->string('faviconLink', 100)->nullable()->default('/media/favicon.png');
             $table->string('homepageURL', 10)->nullable()->default('/');
+            $table->string('homepageTitle', 10)->nullable()->default('/');
             $table->string('errorpageURL', 10)->nullable()->default('404');
+            $table->string('errorpageTitle', 10)->nullable()->default('Default');
             $table->timestamps();
         });
     }

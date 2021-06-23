@@ -2024,6 +2024,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2041,6 +2043,8 @@ __webpack_require__.r(__webpack_exports__);
         errorpageURL: null
       },
       pages: null,
+      addPage: true,
+      updatePage: false,
       currentPage: {
         id: null,
         title: null,
@@ -2056,7 +2060,9 @@ __webpack_require__.r(__webpack_exports__);
         faviconLink: null,
         loginURL: null,
         homepageURL: null,
-        errorpageURL: null
+        homepageTitle: null,
+        errorpageURL: null,
+        errorpageTitle: null
       },
       media: [{
         id: 1,
@@ -2103,15 +2109,46 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {},
   methods: {
+    nePage: function nePage() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/v1/pages', {
+        title: this.currentPage.title,
+        type: this.currentPage.type,
+        url: this.currentPage.url,
+        headerCode: this.currentPage.headerCode,
+        body: this.currentPage.body,
+        footerCode: this.currentPage.footerCode
+      }).then(function (res) {
+        console.log(res.data);
+        alert('Successfully Added!');
+      })["catch"](function (err) {
+        console.log(err);
+        alert('Somethings wrong!');
+      });
+    },
     editPage: function editPage() {
       // console.log(this.currentPage)
-      this.currentPage.id = this.pages[this.currentPage.id - 1].id;
-      this.currentPage.title = this.pages[this.currentPage.id - 1].title;
-      this.currentPage.type = this.pages[this.currentPage.id - 1].type;
-      this.currentPage.url = this.pages[this.currentPage.id - 1].url;
-      this.currentPage.headerCode = this.pages[this.currentPage.id - 1].headerCode;
-      this.currentPage.body = this.pages[this.currentPage.id - 1].body;
-      this.currentPage.footerCode = this.pages[this.currentPage.id - 1].footerCode;
+      if (this.currentPage.id != 0) {
+        this.addPage = false;
+        this.updatePage = true;
+        this.currentPage.id = this.pages[this.currentPage.id - 1].id;
+        this.currentPage.title = this.pages[this.currentPage.id - 1].title;
+        this.currentPage.type = this.pages[this.currentPage.id - 1].type;
+        this.currentPage.url = this.pages[this.currentPage.id - 1].url;
+        this.currentPage.headerCode = this.pages[this.currentPage.id - 1].headerCode;
+        this.currentPage.body = this.pages[this.currentPage.id - 1].body;
+        this.currentPage.footerCode = this.pages[this.currentPage.id - 1].footerCode;
+      } else {
+        this.addPage = true;
+        this.updatePage = false;
+        this.currentPage.id = null;
+        this.currentPage.title = null;
+        this.currentPage.type = null;
+        this.currentPage.url = null;
+        this.currentPage.headerCode = null;
+        this.currentPage.body = null;
+        this.currentPage.footerCode = null;
+        console.log('Addpage is selected');
+      }
     },
     fetchPage: function fetchPage() {
       var _this = this;
@@ -2130,7 +2167,9 @@ __webpack_require__.r(__webpack_exports__);
         _this2.currentSettings.faviconLink = res.data.faviconLink;
         _this2.currentSettings.loginURL = res.data.loginURL;
         _this2.currentSettings.homepageURL = res.data.homepageURL;
+        _this2.currentSettings.homepageTitle = res.data.homepageTitle;
         _this2.currentSettings.errorpageURL = res.data.errorpageURL;
+        _this2.currentSettings.errorpageTitle = res.data.errorpageTitle;
         console.log(res);
       }).then(function () {
         _this2.fetchPage();
@@ -2139,7 +2178,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveSettings: function saveSettings() {
       console.log('save settings');
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('api/v1/settings', {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('/api/v1/settings', {
         title: this.currentSettings.title,
         tagline: this.currentSettings.tagline,
         faviconLink: this.currentSettings.faviconLink,
@@ -2147,11 +2186,13 @@ __webpack_require__.r(__webpack_exports__);
         homepageURL: this.currentSettings.homepageURL,
         errorpageURL: this.currentSettings.errorpageURL
       }).then(function (res) {
-        console.log(res.data);
+        console.log(res);
+        alert('Successfully saved!');
+      })["catch"](function (err) {
+        console.log(err);
       });
     },
     savePage: function savePage() {
-      console.log('save Page');
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('api/v1/pages', {
         id: this.currentPage.id,
         title: this.currentPage.title,
@@ -2162,8 +2203,10 @@ __webpack_require__.r(__webpack_exports__);
         footerCode: this.currentPage.footerCode
       }).then(function (res) {
         console.log(res.data);
+        alert('Successfully saved!');
       })["catch"](function (err) {
         console.log(err);
+        alert('Somethings wrong!');
       });
     }
   },
@@ -3557,7 +3600,11 @@ var render = function() {
             _vm._l(_vm.pages, function(page) {
               return _c(
                 "option",
-                { key: page.id, domProps: { value: page.url } },
+                {
+                  key: page.id,
+                  attrs: { selected: "" },
+                  domProps: { value: page.url }
+                },
                 [_vm._v(_vm._s(page.title))]
               )
             }),
@@ -3605,7 +3652,11 @@ var render = function() {
             _vm._l(_vm.pages, function(page) {
               return _c(
                 "option",
-                { key: page.id, domProps: { value: page.url } },
+                {
+                  key: page.id,
+                  attrs: { selected: "" },
+                  domProps: { value: page.url }
+                },
                 [_vm._v(_vm._s(page.title))]
               )
             }),
@@ -3636,7 +3687,7 @@ var render = function() {
                     expression: "currentPage.id"
                   }
                 ],
-                attrs: { name: "id" },
+                attrs: { name: "page" },
                 on: {
                   change: [
                     function($event) {
@@ -3660,14 +3711,20 @@ var render = function() {
                   ]
                 }
               },
-              _vm._l(_vm.pages, function(page) {
-                return _c(
-                  "option",
-                  { key: page.id, domProps: { value: page.id } },
-                  [_vm._v(_vm._s(page.title))]
-                )
-              }),
-              0
+              [
+                _c("option", { attrs: { value: "0", selected: "" } }, [
+                  _vm._v("Add new page")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.pages, function(page) {
+                  return _c(
+                    "option",
+                    { key: page.id, domProps: { value: page.id } },
+                    [_vm._v(_vm._s(page.title))]
+                  )
+                })
+              ],
+              2
             ),
             _vm._v(" "),
             _c("br"),
@@ -3828,9 +3885,17 @@ var render = function() {
             _c("br"),
             _vm._v(" "),
             _c("div", { staticClass: "button" }, [
-              _c("button", { on: { click: _vm.savePage } }, [
-                _vm._v("Update page ⚡")
-              ])
+              _vm.updatePage
+                ? _c("button", { on: { click: _vm.savePage } }, [
+                    _vm._v("Update page ⚡")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.addPage
+                ? _c("button", { on: { click: _vm.nePage } }, [
+                    _vm._v("Add this page ⚡")
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
